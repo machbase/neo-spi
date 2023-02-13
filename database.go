@@ -75,9 +75,16 @@ type Database interface {
 	Appender(tableName string) (Appender, error)
 }
 
-type DatabaseLife interface {
+type DatabaseServer interface {
+	Database
 	Startup() error
 	Shutdown() error
+}
+
+type DatabaseClient interface {
+	Database
+	Connect(serverAddr string, opts ...any) error
+	Disconnect()
 }
 
 type DatabaseAuth interface {
