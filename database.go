@@ -237,5 +237,6 @@ type Appender interface {
 	TableType() TableType
 	Columns() (Columns, error)
 	Append(values ...any) error
+	AppendWithTimestamp(ts time.Time, values ...any) error
 	Close() (int64, int64, error)
 }

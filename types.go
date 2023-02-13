@@ -1,5 +1,7 @@
 package spi
 
+// 0: Log Table, 1: Fixed Table, 3: Volatile Table,
+// 4: Lookup Table, 5: KeyValue Table, 6: Tag Table
 type TableType int
 
 const (
