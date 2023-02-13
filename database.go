@@ -75,6 +75,15 @@ type Database interface {
 	Appender(tableName string) (Appender, error)
 }
 
+type DatabaseLife interface {
+	Startup() error
+	Shutdown() error
+}
+
+type DatabaseAuth interface {
+	UserAuth(user string, password string) (bool, error)
+}
+
 type Result interface {
 	Err() error
 	RowsAffected() int64
