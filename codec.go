@@ -1,6 +1,9 @@
 package spi
 
-import "time"
+import (
+	"io"
+	"time"
+)
 
 type RowsEncoderContext struct {
 	Sink         Sink
@@ -17,4 +20,16 @@ type RowsEncoder interface {
 	AddRow(values []any) error
 	Flush(heading bool)
 	ContentType() string
+}
+
+type RowsDecoderContext struct {
+	Reader       io.Reader
+	TableName    string
+	Columns      Columns
+	TimeLocation *time.Location
+	TimeFormat   string
+}
+
+type RowsDecoder interface {
+	NextRow() ([]any, error)
 }

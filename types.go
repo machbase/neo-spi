@@ -1,5 +1,12 @@
 package spi
 
+import (
+	"fmt"
+	"net"
+	"strconv"
+	"time"
+)
+
 // 0: Log Table, 1: Fixed Table, 3: Volatile Table,
 // 4: Lookup Table, 5: KeyValue Table, 6: Tag Table
 type TableType int
@@ -52,3 +59,156 @@ const (
 	IpV4ColumnType                = 32
 	IpV6ColumnType                = 36
 )
+
+// ColumnTypeString converts ColumnType into string.
+func ColumnTypeString(typ ColumnType) string {
+	switch typ {
+	case Int16ColumnType:
+		return "int16"
+	case Uint16ColumnType:
+		return "uint16"
+	case Int32ColumnType:
+		return "int32"
+	case Uint32ColumnType:
+		return "uint32"
+	case Int64ColumnType:
+		return "int64"
+	case Uint64ColumnType:
+		return "uint64"
+	case Float32ColumnType:
+		return "float"
+	case Float64ColumnType:
+		return "double"
+	case VarcharColumnType:
+		return "varchar"
+	case TextColumnType:
+		return "text"
+	case ClobColumnType:
+		return "clob"
+	case BlobColumnType:
+		return "blob"
+	case BinaryColumnType:
+		return "binary"
+	case DatetimeColumnType:
+		return "datetime"
+	case IpV4ColumnType:
+		return "ipv4"
+	case IpV6ColumnType:
+		return "ipv6"
+	default:
+		return "undef"
+	}
+}
+
+func ColumnBufferType(typ ColumnType) string {
+	switch typ {
+	case Int16ColumnType:
+		return ColumnBufferTypeInt16
+	case Uint16ColumnType:
+		return ColumnBufferTypeInt16
+	case Int32ColumnType:
+		return ColumnBufferTypeInt32
+	case Uint32ColumnType:
+		return ColumnBufferTypeInt32
+	case Int64ColumnType:
+		return ColumnBufferTypeInt64
+	case Uint64ColumnType:
+		return ColumnBufferTypeInt64
+	case Float32ColumnType:
+		return ColumnBufferTypeFloat
+	case Float64ColumnType:
+		return ColumnBufferTypeDouble
+	case VarcharColumnType:
+		return ColumnBufferTypeString
+	case TextColumnType:
+		return ColumnBufferTypeString
+	case ClobColumnType:
+		return ColumnBufferTypeBinary
+	case BlobColumnType:
+		return ColumnBufferTypeBinary
+	case BinaryColumnType:
+		return ColumnBufferTypeBinary
+	case DatetimeColumnType:
+		return ColumnBufferTypeDatetime
+	case IpV4ColumnType:
+		return ColumnBufferTypeIPv4
+	case IpV6ColumnType:
+		return ColumnBufferTypeIPv6
+	default:
+		return "undefbuffer"
+	}
+}
+
+func ParseColumnValue(str string, ctype ColumnType, tz *time.Location, timeformat string) (any, error) {
+	switch ctype {
+	case Int16ColumnType:
+		return strconv.ParseInt(str, 10, 16)
+	case Uint16ColumnType:
+		return strconv.ParseUint(str, 10, 16)
+	case Int32ColumnType:
+		return strconv.ParseInt(str, 10, 32)
+	case Uint32ColumnType:
+		return strconv.ParseUint(str, 10, 32)
+	case Int64ColumnType:
+		return strconv.ParseInt(str, 10, 64)
+	case Uint64ColumnType:
+		return strconv.ParseUint(str, 10, 64)
+	case Float32ColumnType:
+		return strconv.ParseFloat(str, 32)
+	case Float64ColumnType:
+		return strconv.ParseFloat(str, 64)
+	case VarcharColumnType:
+		return str, nil
+	case TextColumnType:
+		return str, nil
+	case ClobColumnType:
+		return str, nil
+	case BlobColumnType:
+		return str, nil
+	case BinaryColumnType:
+		return str, nil
+	case DatetimeColumnType:
+		switch timeformat {
+		case "ns":
+			v, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			return time.Unix(0, v), nil
+		case "ms":
+			v, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			return time.Unix(0, v*int64(time.Millisecond)), nil
+		case "us":
+			v, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			return time.Unix(0, v*int64(time.Microsecond)), nil
+		case "s":
+			v, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				return nil, err
+			}
+			return time.Unix(v, 0), nil
+		default:
+			return time.ParseInLocation(timeformat, str, tz)
+		}
+	case IpV4ColumnType:
+		if ip := net.ParseIP(str); ip != nil {
+			return ip, nil
+		} else {
+			return nil, fmt.Errorf("unable to parse as ip address %s", str)
+		}
+	case IpV6ColumnType:
+		if ip := net.ParseIP(str); ip != nil {
+			return ip, nil
+		} else {
+			return nil, fmt.Errorf("unable to parse as ip address %s", str)
+		}
+	default:
+		return nil, fmt.Errorf("unknown column type %d", ctype)
+	}
+}

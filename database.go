@@ -207,16 +207,16 @@ func (cols Columns) Types() []string {
 }
 
 const (
-	ColumnTypeNameInt16    = "int16"
-	ColumnTypeNameInt32    = "int32"
-	ColumnTypeNameInt64    = "int64"
-	ColumnTypeNameDatetime = "datetime"
-	ColumnTypeNameFloat    = "float"
-	ColumnTypeNameDouble   = "double"
-	ColumnTypeNameIPv4     = "ipv4"
-	ColumnTypeNameIPv6     = "ipv6"
-	ColumnTypeNameString   = "string"
-	ColumnTypeNameBinary   = "binary"
+	ColumnBufferTypeInt16    = "int16"
+	ColumnBufferTypeInt32    = "int32"
+	ColumnBufferTypeInt64    = "int64"
+	ColumnBufferTypeDatetime = "datetime"
+	ColumnBufferTypeFloat    = "float"
+	ColumnBufferTypeDouble   = "double"
+	ColumnBufferTypeIPv4     = "ipv4"
+	ColumnBufferTypeIPv6     = "ipv6"
+	ColumnBufferTypeString   = "string"
+	ColumnBufferTypeBinary   = "binary"
 )
 
 func (cols Columns) MakeBuffer() []any {
