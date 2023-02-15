@@ -12,5 +12,5 @@ type RenderingData struct {
 
 type Renderer interface {
 	ContentType() string
-	Render(ctx context.Context, sink Sink, data []*RenderingData) error
+	Render(ctx context.Context, output OutputStream, data []*RenderingData) error
 }

@@ -1,6 +1,6 @@
 package spi
 
-type Sink interface {
+type OutputStream interface {
 	Write([]byte) (int, error)
 	Flush() error
 	Close() error

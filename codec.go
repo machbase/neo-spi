@@ -6,7 +6,7 @@ import (
 )
 
 type RowsEncoderContext struct {
-	Sink         Sink
+	Output       OutputStream
 	Rownum       bool
 	Heading      bool
 	TimeLocation *time.Location
