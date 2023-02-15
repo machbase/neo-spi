@@ -8,4 +8,5 @@ type OutputStream interface {
 
 type InputStream interface {
 	Read(p []byte) (n int, err error)
+	Close() error
 }

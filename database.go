@@ -75,12 +75,14 @@ type Database interface {
 	Appender(tableName string) (Appender, error)
 }
 
+// DatabaseServer represents a spi implementation for Database server
 type DatabaseServer interface {
 	Database
 	Startup() error
 	Shutdown() error
 }
 
+// DatabaseClient represents a spi implementation for Database client
 type DatabaseClient interface {
 	Database
 	Connect(serverAddr string, opts ...any) error
