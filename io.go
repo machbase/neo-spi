@@ -5,3 +5,7 @@ type OutputStream interface {
 	Flush() error
 	Close() error
 }
+
+type InputStream interface {
+	Read(p []byte) (n int, err error)
+}

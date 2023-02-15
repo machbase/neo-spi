@@ -1,7 +1,6 @@
 package spi
 
 import (
-	"io"
 	"time"
 )
 
@@ -23,7 +22,7 @@ type RowsEncoder interface {
 }
 
 type RowsDecoderContext struct {
-	Reader       io.Reader
+	Reader       InputStream
 	TableName    string
 	Columns      Columns
 	TimeLocation *time.Location
