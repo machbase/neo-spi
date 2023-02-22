@@ -58,6 +58,7 @@ const (
 	DatetimeColumnType            = 6
 	IpV4ColumnType                = 32
 	IpV6ColumnType                = 36
+	JsonColumnType                = 61
 )
 
 // ColumnTypeString converts ColumnType into string.
@@ -95,8 +96,10 @@ func ColumnTypeString(typ ColumnType) string {
 		return "ipv4"
 	case IpV6ColumnType:
 		return "ipv6"
+	case JsonColumnType:
+		return "json"
 	default:
-		return "undef"
+		return fmt.Sprintf("undef-%d", typ)
 	}
 }
 
@@ -134,8 +137,10 @@ func ColumnBufferType(typ ColumnType) string {
 		return ColumnBufferTypeIPv4
 	case IpV6ColumnType:
 		return ColumnBufferTypeIPv6
+	case JsonColumnType:
+		return ColumnBufferTypeString
 	default:
-		return "undefbuffer"
+		return "undef-buffer"
 	}
 }
 
