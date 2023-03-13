@@ -14,7 +14,7 @@ type RowsEncoderContext struct {
 }
 
 type RowsEncoder interface {
-	Open(colums Columns) error
+	Open(columns Columns) error
 	Close()
 	AddRow(values []any) error
 	Flush(heading bool)
