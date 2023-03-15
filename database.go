@@ -72,7 +72,7 @@ type Database interface {
 	//	app, _ := client.Appender("MYTABLE")
 	//	defer app.Close()
 	//	app.Append("name", time.Now(), 3.14)
-	Appender(tableName string) (Appender, error)
+	Appender(tableName string, opts ...AppendOption) (Appender, error)
 }
 
 // DatabaseServer represents a spi implementation for Database server
@@ -258,3 +258,11 @@ type Appender interface {
 	AppendWithTimestamp(ts time.Time, values ...any) error
 	Close() (int64, int64, error)
 }
+
+type AppendOption interface {
+	appendoption()
+}
+
+func (o AppendTimeformatOption) appendoption() {}
+
+type AppendTimeformatOption string
