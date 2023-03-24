@@ -78,6 +78,7 @@ type Database interface {
 // DatabaseServer represents a spi implementation for Database server
 type DatabaseServer interface {
 	Database
+	DatabaseAuth
 	Startup() error
 	Shutdown() error
 }
