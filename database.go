@@ -93,6 +93,10 @@ type DatabaseAuth interface {
 	UserAuth(user string, password string) (bool, error)
 }
 
+type Pinger interface {
+	Ping() (time.Duration, error)
+}
+
 type Result interface {
 	Err() error
 	RowsAffected() int64
