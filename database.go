@@ -12,7 +12,7 @@ type Database interface {
 	GetServerInfo() (*ServerInfo, error)
 
 	// Explain retrieves execution plan of the given SQL statement.
-	Explain(sqlText string) (string, error)
+	Explain(sqlText string, full bool) (string, error)
 
 	// Exec executes SQL statements that does not return result
 	// like 'ALTER', 'CREATE TABLE', 'DROP TABLE', ...
