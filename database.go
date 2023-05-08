@@ -11,6 +11,9 @@ type Database interface {
 	// GetServerInfo gets ServerInfo
 	GetServerInfo() (*ServerInfo, error)
 
+	// GetServicePorts returns port info
+	GetServicePorts(service string) ([]*ServicePort, error)
+
 	// Explain retrieves execution plan of the given SQL statement.
 	Explain(sqlText string, full bool) (string, error)
 
@@ -131,6 +134,11 @@ type Runtime struct {
 	MemHeapInUse   uint64
 	MemStackSys    uint64
 	MemStackInUse  uint64
+}
+
+type ServicePort struct {
+	Service string
+	Address string
 }
 
 type Rows interface {
