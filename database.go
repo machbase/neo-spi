@@ -25,6 +25,11 @@ type Database interface {
 	// like 'ALTER', 'CREATE TABLE', 'DROP TABLE', ...
 	ExecContext(ctx context.Context, sqlText string, params ...any) Result
 
+	// PrepareQuery returns parsed Rows. Caller should call Rows.Execute()
+	//
+	// Rows returned by PrepareQuery() must be closed to prevent leaking resources.
+	PrepareQuery(sqlText string) (Rows, error)
+
 	// Query executes SQL statements that are expected multipe rows as result.
 	// Commonly used to execute 'SELECT * FROM <TABLE>'
 	//
@@ -172,6 +177,9 @@ type Rows interface {
 
 	// Columns returns list of column info that consists of result of query statement.
 	Columns() (Columns, error)
+
+	// Execute executes prepared query
+	Execute(params ...any) error
 }
 
 type Row interface {
