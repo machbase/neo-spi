@@ -88,7 +88,7 @@ type DatabaseServer interface {
 // DatabaseClient represents a spi implementation for Database client
 type DatabaseClient interface {
 	Database
-	Connect(serverAddr string, opts ...any) error
+	Connect() error
 	Disconnect()
 }
 
