@@ -231,6 +231,8 @@ const (
 	ColumnBufferTypeIPv6     = "ipv6"
 	ColumnBufferTypeString   = "string"
 	ColumnBufferTypeBinary   = "binary"
+	ColumnBufferTypeBoolean  = "bool"
+	ColumnBufferTypeByte     = "int8"
 )
 
 func (cols Columns) MakeBuffer() []any {
@@ -257,6 +259,10 @@ func (cols Columns) MakeBuffer() []any {
 			rec[i] = new(string)
 		case "binary":
 			rec[i] = new([]byte)
+		case "bool":
+			rec[i] = new(bool)
+		case "int8":
+			rec[i] = new(byte)
 		}
 	}
 	return rec
