@@ -8,15 +8,6 @@ import (
 )
 
 type Database interface {
-	// GetServerInfo gets ServerInfo
-	GetServerInfo() (*ServerInfo, error)
-
-	// GetServicePorts returns port info
-	GetServicePorts(service string) ([]*ServicePort, error)
-
-	// Explain retrieves execution plan of the given SQL statement.
-	Explain(sqlText string, full bool) (string, error)
-
 	// Exec executes SQL statements that does not return result
 	// like 'ALTER', 'CREATE TABLE', 'DROP TABLE', ...
 	Exec(sqlText string, params ...any) Result
@@ -92,6 +83,23 @@ type DatabaseClient interface {
 	Disconnect()
 }
 
+type DatabaseAux interface {
+	// GetServerInfo gets ServerInfo
+	GetServerInfo() (*ServerInfo, error)
+
+	// GetInflights returns list of inflights statements
+	GetInflights() ([]*Inflight, error)
+
+	// GetPostflights returns list of postflights statements
+	GetPostflights() ([]*Postflight, error)
+
+	// GetServicePorts returns port info
+	GetServicePorts(service string) ([]*ServicePort, error)
+
+	// Explain retrieves execution plan of the given SQL statement.
+	Explain(sqlText string, full bool) (string, error)
+}
+
 type DatabaseAuth interface {
 	UserAuth(user string, password string) (bool, error)
 }
@@ -104,6 +112,19 @@ type Result interface {
 	Err() error
 	RowsAffected() int64
 	Message() string
+}
+
+type Inflight struct {
+	Id      string
+	Type    string
+	SqlText string
+	Elapsed time.Duration
+}
+
+type Postflight struct {
+	SqlText   string
+	Count     int64
+	TotalTime time.Duration
 }
 
 type ServerInfo struct {
