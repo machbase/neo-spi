@@ -8,65 +8,8 @@ import (
 )
 
 type Database interface {
-	// Exec executes SQL statements that does not return result
-	// like 'ALTER', 'CREATE TABLE', 'DROP TABLE', ...
-	Exec(sqlText string, params ...any) Result
-
-	// ExecContext executes SQL statements that does not return result
-	// like 'ALTER', 'CREATE TABLE', 'DROP TABLE', ...
-	ExecContext(ctx context.Context, sqlText string, params ...any) Result
-
-	// Query executes SQL statements that are expected multipe rows as result.
-	// Commonly used to execute 'SELECT * FROM <TABLE>'
-	//
-	// Rows returned by Query() must be closed to prevent leaking resources.
-	//
-	//	rows, err := client.Query("select * from my_table where name = ?", "my_name")
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	defer rows.Close()
-	Query(sqlText string, params ...any) (Rows, error)
-
-	// Query executes SQL statements that are expected multipe rows as result.
-	// Commonly used to execute 'SELECT * FROM <TABLE>'
-	//
-	// Rows returned by QueryContext() must be closed to prevent server-side-resource leaks.
-	//
-	//	ctx, cancelFunc := context.WithTimeout(5*time.Second)
-	//	defer cancelFunc()
-	//
-	//	rows, err := client.QueryContext(ctx, "select * from my_table where name = ?", my_name)
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	defer rows.Close()
-	QueryContext(ctx context.Context, sqlText string, params ...any) (Rows, error)
-
-	// QueryRow executes a SQL statement that expects a single row result.
-	//
-	//	var cnt int
-	//	row := client.QueryRow("select count(*) from my_table where name = ?", "my_name")
-	//	row.Scan(&cnt)
-	QueryRow(sqlText string, params ...any) Row
-
-	// QueryRowContext executes a SQL statement that expects a single row result.
-	//
-	//	ctx, cancelFunc := context.WithTimeout(5*time.Second)
-	//	defer cancelFunc()
-	//
-	//	var cnt int
-	//	row := client.QueryRowContext(ctx, "select count(*) from my_table where name = ?", "my_name")
-	//	row.Scan(&cnt)
-	QueryRowContext(ctx context.Context, sqlText string, params ...any) Row
-
-	// Appender creates a new Appender for the given table.
-	// Appender should be closed as soon as finshing work, otherwise it may cause server side resource leak.
-	//
-	//	app, _ := client.Appender("MYTABLE")
-	//	defer app.Close()
-	//	app.Append("name", time.Now(), 3.14)
-	Appender(tableName string, opts ...AppendOption) (Appender, error)
+	// Connect makes a new Conn
+	Connect(ctx context.Context, options ...ConnectOption) (Conn, error)
 }
 
 // DatabaseServer represents a spi implementation for Database server
@@ -79,7 +22,7 @@ type DatabaseServer interface {
 // DatabaseClient represents a spi implementation for Database client
 type DatabaseClient interface {
 	Database
-	Connect() error
+	// Connect() error
 	Disconnect()
 }
 
@@ -95,13 +38,62 @@ type DatabaseAux interface {
 
 	// GetServicePorts returns port info
 	GetServicePorts(service string) ([]*ServicePort, error)
+}
 
+type Explainer interface {
 	// Explain retrieves execution plan of the given SQL statement.
-	Explain(sqlText string, full bool) (string, error)
+	Explain(ctx context.Context, sqlText string, full bool) (string, error)
 }
 
 type DatabaseAuth interface {
 	UserAuth(user string, password string) (bool, error)
+}
+
+type ConnectOption func(Conn)
+
+type Conn interface {
+	// Close closes connection
+	Close() error
+
+	// ExecContext executes SQL statements that does not return result
+	// like 'ALTER', 'CREATE TABLE', 'DROP TABLE', ...
+	Exec(ctx context.Context, sqlText string, params ...any) Result
+
+	// Query executes SQL statements that are expected multipe rows as result.
+	// Commonly used to execute 'SELECT * FROM <TABLE>'
+	//
+	// Rows returned by Query() must be closed to prevent server-side-resource leaks.
+	//
+	//	ctx, cancelFunc := context.WithTimeout(5*time.Second)
+	//	defer cancelFunc()
+	//
+	//	rows, err := conn.Query(ctx, "select * from my_table where name = ?", my_name)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//	defer rows.Close()
+	Query(ctx context.Context, sqlText string, params ...any) (Rows, error)
+
+	// QueryRow executes a SQL statement that expects a single row result.
+	//
+	//	ctx, cancelFunc := context.WithTimeout(5*time.Second)
+	//	defer cancelFunc()
+	//
+	//	var cnt int
+	//	row := conn.QueryRow(ctx, "select count(*) from my_table where name = ?", "my_name")
+	//	row.Scan(&cnt)
+	QueryRow(ctx context.Context, sqlText string, params ...any) Row
+
+	// Appender creates a new Appender for the given table.
+	// Appender should be closed as soon as finshing work, otherwise it may cause server side resource leak.
+	//
+	//	ctx, cancelFunc := context.WithTimeout(5*time.Second)
+	//	defer cancelFunc()
+	//
+	//	app, _ := conn.Appender(ctx, "MYTABLE")
+	//	defer app.Close()
+	//	app.Append("name", time.Now(), 3.14)
+	Appender(ctx context.Context, tableName string, opts ...AppendOption) (Appender, error)
 }
 
 type Pinger interface {
