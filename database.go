@@ -22,8 +22,7 @@ type DatabaseServer interface {
 // DatabaseClient represents a spi implementation for Database client
 type DatabaseClient interface {
 	Database
-	// Connect() error
-	Disconnect()
+	Close()
 }
 
 type DatabaseAux interface {
