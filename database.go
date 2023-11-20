@@ -92,7 +92,7 @@ type Conn interface {
 	//	app, _ := conn.Appender(ctx, "MYTABLE")
 	//	defer app.Close()
 	//	app.Append("name", time.Now(), 3.14)
-	Appender(ctx context.Context, tableName string, opts ...AppendOption) (Appender, error)
+	Appender(ctx context.Context, tableName string, opts ...AppenderOption) (Appender, error)
 }
 
 type Pinger interface {
@@ -289,10 +289,4 @@ type Appender interface {
 	Close() (int64, int64, error)
 }
 
-type AppendOption interface {
-	appendoption()
-}
-
-func (o AppendTimeformatOption) appendoption() {}
-
-type AppendTimeformatOption string
+type AppenderOption func(Appender)
