@@ -103,6 +103,64 @@ func ColumnTypeString(typ ColumnType) string {
 	}
 }
 
+func ColumnTypeStringNative(typ ColumnType) string {
+	switch typ {
+	case Int16ColumnType:
+		return "short"
+	case Uint16ColumnType:
+		return "ushort"
+	case Int32ColumnType:
+		return "integer"
+	case Uint32ColumnType:
+		return "uinteger"
+	case Int64ColumnType:
+		return "long"
+	case Uint64ColumnType:
+		return "ulong"
+	case Float32ColumnType:
+		return "float"
+	case Float64ColumnType:
+		return "double"
+	case VarcharColumnType:
+		return "varchar"
+	case TextColumnType:
+		return "text"
+	case ClobColumnType:
+		return "clob"
+	case BlobColumnType:
+		return "blob"
+	case BinaryColumnType:
+		return "binary"
+	case DatetimeColumnType:
+		return "datetime"
+	case IpV4ColumnType:
+		return "ipv4"
+	case IpV6ColumnType:
+		return "ipv6"
+	case JsonColumnType:
+		return "json"
+	default:
+		return fmt.Sprintf("undef-%d", typ)
+	}
+}
+
+type IndexType int
+
+func IndexTypeString(typ IndexType) string {
+	switch typ {
+	case 6:
+		return "BITMAP (LSM)"
+	case 8:
+		return "REDBLACK"
+	case 9:
+		return "KEYWORD (LSM)"
+	case 11:
+		return "TAG"
+	default:
+		return fmt.Sprintf("undef-%d", typ)
+	}
+}
+
 func ColumnBufferType(typ ColumnType) string {
 	switch typ {
 	case Int16ColumnType:
