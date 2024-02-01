@@ -144,6 +144,28 @@ func ColumnTypeStringNative(typ ColumnType) string {
 	}
 }
 
+const (
+	ColumnFlagTagName    = 0x08000000
+	ColumnFlagBasetime   = 0x01000000
+	ColumnFlagSummarized = 0x02000000
+	ColumnFlagMetaColumn = 0x04000000
+)
+
+func ColumnFlagString(flag int) string {
+	switch flag {
+	case ColumnFlagTagName:
+		return "tag name"
+	case ColumnFlagBasetime:
+		return "basetime"
+	case ColumnFlagSummarized:
+		return "summarized"
+	case ColumnFlagMetaColumn:
+		return "meta"
+	default:
+		return ""
+	}
+}
+
 type IndexType int
 
 func IndexTypeString(typ IndexType) string {
